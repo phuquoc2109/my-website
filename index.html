@@ -4,17 +4,909 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trang chủ</title>
+  <title>QuantumForge Labs - Kiến tạo tương lai số</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#6366F1',
+            secondary: '#8B5CF6',
+            accent: '#F59E0B',
+            neon: '#00F5FF'
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'glow': 'glow 2s ease-in-out infinite alternate',
+            'slide-up': 'slideUp 0.8s ease-out',
+            'fade-in': 'fadeIn 1s ease-out',
+            'bounce-slow': 'bounce 3s infinite',
+            'spin-slow': 'spin 8s linear infinite',
+            'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+  
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 50px;
+    * { 
+      font-family: 'Inter', sans-serif; 
+      box-sizing: border-box;
+    }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    @keyframes glow {
+      from { box-shadow: 0 0 20px #6366F1; }
+      to { box-shadow: 0 0 30px #8B5CF6, 0 0 40px #8B5CF6; }
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(100px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 5px rgba(99, 102, 241, 0.5); }
+      50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.8), 0 0 30px rgba(139, 92, 246, 0.6); }
+    }
+    
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.05) !important;
+      backdrop-filter: blur(20px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    .neon-text {
+      text-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(45deg, #6366F1, #8B5CF6, #EC4899) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      background-clip: text !important;
+      background-size: 200% 200% !important;
+      animation: gradient 3s ease infinite !important;
+    }
+    
+    .holographic {
+      background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff, #06ffa5, #ffbe0b);
+      background-size: 300% 300%;
+      animation: gradient 3s ease infinite;
+    }
+    
+    .cyber-grid {
+      background-image: 
+        linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+    
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* Service Cards Styling */
+    .service-card {
+      background: rgba(255, 255, 255, 0.03) !important;
+      backdrop-filter: blur(20px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+      transition: all 0.3s ease !important;
+      position: relative !important;
+      overflow: hidden !important;
+      display: block !important;
+      width: 100% !important;
+      transform: translateZ(0) !important; /* Force hardware acceleration */
+      will-change: transform, box-shadow !important;
+    }
+    
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+      transition: left 0.5s ease;
+      z-index: 1;
+    }
+    
+    .service-card:hover::before {
+      left: 100%;
+    }
+    
+    .service-card:hover {
+      transform: translateY(-5px) translateZ(0) !important;
+      box-shadow: 0 15px 35px rgba(99, 102, 241, 0.2) !important;
+    }
+    
+    .service-card > * {
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Tech Items Styling */
+    .tech-item {
+      background: rgba(255, 255, 255, 0.03) !important;
+      backdrop-filter: blur(20px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+      transition: all 0.3s ease !important;
+      display: block !important;
+      width: 100% !important;
+      transform: translateZ(0) !important;
+      will-change: transform, box-shadow !important;
+    }
+    
+    .tech-item:hover {
+      transform: translateY(-3px) scale(1.05) translateZ(0) !important;
+      box-shadow: 0 12px 25px rgba(99, 102, 241, 0.3) !important;
+      background: rgba(255, 255, 255, 0.06) !important;
+    }
+    
+    /* Remove conflicting animations */
+    .group:hover .group-hover\:animate-spin,
+    .group:hover .group-hover\:animate-bounce,
+    .group:hover .group-hover\:animate-pulse,
+    .group:hover .group-hover\:animate-spin-slow {
+      animation: none !important;
+    }
+    
+    /* Smooth icon hover effects */
+    .service-card .group:hover i,
+    .tech-item .group:hover i {
+      transform: scale(1.1) !important;
+      transition: transform 0.3s ease !important;
+    }
+    
+    /* Service card icon animations */
+    .service-card:hover .fas.fa-brain {
+      animation: spin 2s linear infinite !important;
+    }
+    
+    .service-card:hover .fas.fa-cube {
+      animation: bounce 1s infinite !important;
+    }
+    
+    .service-card:hover .fas.fa-vr-cardboard {
+      animation: pulse 2s infinite !important;
+    }
+    
+    .service-card:hover .fas.fa-satellite-dish {
+      animation: spin 3s linear infinite !important;
+    }
+    
+    .service-card:hover .fas.fa-shield-virus {
+      animation: bounce 1.5s infinite !important;
+    }
+    
+    .service-card:hover .fas.fa-rocket {
+      animation: pulse 1.5s infinite !important;
+    }
+    
+    /* Tech item icon animations */
+    .tech-item:hover .fab.fa-react {
+      animation: spin 2s linear infinite !important;
+    }
+    
+    .tech-item:hover .fab.fa-node-js {
+      animation: bounce 1s infinite !important;
+    }
+    
+    .tech-item:hover .fab.fa-python {
+      animation: pulse 2s infinite !important;
+    }
+    
+    .tech-item:hover .fab.fa-aws {
+      animation: bounce 1.5s infinite !important;
+    }
+    
+    .tech-item:hover .fab.fa-docker {
+      animation: spin 2s linear infinite !important;
+    }
+    
+    .tech-item:hover .fas.fa-database {
+      animation: pulse 2s infinite !important;
+    }
+    
+    .tech-item:hover .fab.fa-git-alt {
+      animation: bounce 1s infinite !important;
+    }
+    
+    .tech-item:hover .fas.fa-fire {
+      animation: pulse 1.5s infinite !important;
+    }
+    
+    /* Ensure animations don't conflict with transforms */
+    .service-card i,
+    .tech-item i {
+      display: inline-block;
+      transform-origin: center;
+    }
+    
+    .floating-shapes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .shape {
+      position: absolute;
+      opacity: 0.1;
+      animation: float 8s ease-in-out infinite;
+    }
+    
+    .shape:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+    .shape:nth-child(2) { top: 60%; left: 80%; animation-delay: 2s; }
+    .shape:nth-child(3) { top: 80%; left: 20%; animation-delay: 4s; }
+    .shape:nth-child(4) { top: 30%; left: 70%; animation-delay: 6s; }
+    
+    /* Grid fixes */
+    .grid {
+      display: grid !important;
+    }
+    
+    .grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+    
+    @media (min-width: 768px) {
+      .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+      .md\:grid-cols-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .lg\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      }
+      .lg\:grid-cols-8 {
+        grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+      }
+    }
+    
+    /* Responsive fixes */
+    @media (max-width: 768px) {
+      .service-card {
+        margin-bottom: 1rem !important;
+      }
+      
+      .tech-item {
+        padding: 1rem !important;
+      }
+      
+      .tech-item i {
+        font-size: 2rem !important;
+      }
+      
+      .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+    }
+    
+    /* Ensure proper spacing */
+    .service-card h3 {
+      line-height: 1.2;
+    }
+    
+    .service-card p {
+      line-height: 1.6;
+    }
+    
+    /* Animation fixes */
+    .animate-spin-slow {
+      animation: spin 8s linear infinite;
+    }
+    
+    .animate-bounce-slow {
+      animation: bounce 3s infinite;
+    }
+    
+    .animate-pulse-glow {
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+    
+    .animate-glow {
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    
+    /* Gap fixes */
+    .gap-8 {
+      gap: 2rem !important;
+    }
+    
+    /* Ensure visibility */
+    .service-card, .tech-item {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+
+    /* Force grid display */
+    .services-grid {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: 2rem !important;
+    }
+    
+    @media (min-width: 768px) {
+      .services-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .services-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+      }
+    }
+    
+    .tech-grid {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 2rem !important;
+    }
+    
+    @media (min-width: 768px) {
+      .tech-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .tech-grid {
+        grid-template-columns: repeat(8, 1fr) !important;
+      }
     }
   </style>
 </head>
-<body>
-  <h1>Chào mừng đến với trang web của tôi!</h1>
-  <p>Đây là một trang được triển khai bằng CI/CD qua GitHub Pages.</p>
+<body class="bg-gray-900 text-white overflow-x-hidden">
+  <!-- Navigation -->
+  <nav class="fixed w-full z-50 glass-effect">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <div class="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center animate-pulse-glow">
+              <i class="fas fa-atom text-white text-xl"></i>
+            </div>
+            <span class="font-bold text-xl ml-3 gradient-text">QuantumForge</span>
+          </div>
+        </div>
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#home" class="text-gray-300 hover:text-neon transition-all duration-300 hover:glow">Trang chủ</a>
+          <a href="#services" class="text-gray-300 hover:text-neon transition-all duration-300">Dịch vụ</a>
+          <a href="#about" class="text-gray-300 hover:text-neon transition-all duration-300">Giới thiệu</a>
+          <a href="#contact" class="text-gray-300 hover:text-neon transition-all duration-300">Liên hệ</a>
+        </div>
+        <div class="md:hidden flex items-center">
+          <button id="mobile-menu-btn" class="text-gray-300 hover:text-neon">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="min-h-screen relative overflow-hidden cyber-grid">
+    <div id="particles-js"></div>
+    
+    <div class="floating-shapes">
+      <div class="shape w-32 h-32 bg-primary rounded-full"></div>
+      <div class="shape w-24 h-24 bg-secondary rounded-lg rotate-45"></div>
+      <div class="shape w-40 h-40 bg-accent rounded-full"></div>
+      <div class="shape w-28 h-28 bg-neon rounded-lg"></div>
+    </div>
+    
+    <div class="hero-content flex items-center justify-center min-h-screen">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="mb-8">
+          <div class="inline-block p-4 glass-effect rounded-full mb-6 animate-bounce-slow">
+            <i class="fas fa-rocket text-4xl text-neon neon-text"></i>
+          </div>
+        </div>
+        
+        <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
+          <span class="gradient-text">Kiến tạo</span> tương lai
+          <br>
+          <span id="typed-text" class="neon-text text-neon"></span>
+        </h1>
+        
+        <p class="text-xl md:text-2xl mb-12 text-gray-300 max-w-4xl mx-auto leading-relaxed">
+          Chúng tôi không chỉ phát triển công nghệ - chúng tôi <span class="text-neon font-semibold">rèn luyện</span> 
+          những giải pháp <span class="text-accent font-semibold">quantum-level</span> cho kỷ nguyên số mới
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+          <button class="group relative px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-full font-bold text-lg overflow-hidden transform hover:scale-105 transition-all duration-300 animate-glow">
+            <span class="relative z-10 flex items-center">
+              <i class="fas fa-atom mr-3"></i>Khám phá Quantum
+            </span>
+            <div class="absolute inset-0 bg-gradient-to-r from-secondary to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </button>
+          
+          <button class="group px-8 py-4 glass-effect rounded-full font-bold text-lg border-2 border-neon text-neon hover:bg-neon hover:text-gray-900 transition-all duration-300">
+            <i class="fas fa-flask mr-3"></i>Xem Lab Demo
+          </button>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+          <div class="text-center">
+            <div class="text-3xl font-bold text-neon mb-2" data-count="1337">0</div>
+            <div class="text-sm text-gray-400">Quantum Solutions</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-accent mb-2" data-count="42">0</div>
+            <div class="text-sm text-gray-400">Breakthrough Tech</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-primary mb-2" data-count="365">0</div>
+            <div class="text-sm text-gray-400">Days Innovation</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-secondary mb-2" data-count="100">0</div>
+            <div class="text-sm text-gray-400">% Quantum Leap</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <i class="fas fa-chevron-down text-2xl text-neon"></i>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-20">
+        <h2 class="text-4xl md:text-6xl font-black mb-6">
+          <span class="gradient-text">Quantum</span> Arsenal
+        </h2>
+        <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+          Từ Neural Networks đến Quantum Computing - chúng tôi rèn luyện những công nghệ vượt thời đại
+        </p>
+      </div>
+      
+      <div class="services-grid">
+        <!-- Service 1 -->
+        <div class="service-card rounded-2xl p-8 group">
+          <div class="text-6xl mb-6 text-neon">
+            <i class="fas fa-brain"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4 gradient-text">Neural Forge Engine</h3>
+          <p class="text-gray-400 leading-relaxed mb-6">
+            Kiến tạo trí tuệ nhân tạo với Deep Neural Networks, Quantum ML và Consciousness Simulation
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm">QuantumML</span>
+            <span class="px-3 py-1 bg-secondary/20 text-secondary rounded-full text-sm">NeuralForge</span>
+            <span class="px-3 py-1 bg-neon/20 text-neon rounded-full text-sm">DeepMind</span>
+          </div>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="service-card rounded-2xl p-8 group">
+          <div class="text-6xl mb-6 text-accent">
+            <i class="fas fa-cube"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4 gradient-text">CryptoForge Matrix</h3>
+          <p class="text-gray-400 leading-relaxed mb-6">
+            Rèn luyện hệ sinh thái Web3 với Quantum Cryptography, Zero-Knowledge Proofs và Multiverse DeFi
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm">QuantumCrypto</span>
+            <span class="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm">ZK-Proofs</span>
+            <span class="px-3 py-1 bg-secondary/20 text-secondary rounded-full text-sm">MultiDeFi</span>
+          </div>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="service-card rounded-2xl p-8 group">
+          <div class="text-6xl mb-6 text-primary">
+            <i class="fas fa-vr-cardboard"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4 gradient-text">Reality Forge Studio</h3>
+          <p class="text-gray-400 leading-relaxed mb-6">
+            Kiến tạo thực tại song song với Holographic Computing, Neural Interfaces và Consciousness Transfer
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 bg-neon/20 text-neon rounded-full text-sm">HoloEngine</span>
+            <span class="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm">NeuroLink</span>
+            <span class="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm">RealityOS</span>
+          </div>
+        </div>
+
+        <!-- Service 4 -->
+        <div class="service-card rounded-2xl p-8 group">
+          <div class="text-6xl mb-6 text-secondary">
+            <i class="fas fa-satellite-dish"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4 gradient-text">Quantum Network Grid</h3>
+          <p class="text-gray-400 leading-relaxed mb-6">
+            Kết nối vạn vật với Quantum Entanglement, Neural Mesh Networks và Consciousness Streaming
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 bg-secondary/20 text-secondary rounded-full text-sm">QuantumMesh</span>
+            <span class="px-3 py-1 bg-neon/20 text-neon rounded-full text-sm">NeuralGrid</span>
+            <span class="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm">EdgeForge</span>
+          </div>
+        </div>
+
+        <!-- Service 5 -->
+        <div class="service-card rounded-2xl p-8 group">
+          <div class="text-6xl mb-6 text-neon">
+            <i class="fas fa-shield-virus"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4 gradient-text">CyberForge Defense</h3>
+          <p class="text-gray-400 leading-relaxed mb-6">
+            Bảo vệ tuyệt đối với Quantum Encryption, AI Threat Prediction và Neural Firewall Systems
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm">QuantumShield</span>
+            <span class="px-3 py-1 bg-secondary/20 text-secondary rounded-full text-sm">AI-Defense</span>
+            <span class="px-3 py-1 bg-neon/20 text-neon rounded-full text-sm">NeuralWall</span>
+          </div>
+        </div>
+
+        <!-- Service 6 -->
+        <div class="service-card rounded-2xl p-8 group">
+          <div class="text-6xl mb-6 text-accent">
+            <i class="fas fa-rocket"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4 gradient-text">Quantum Deploy Engine</h3>
+          <p class="text-gray-400 leading-relaxed mb-6">
+            Triển khai siêu tốc với Quantum Containers, Neural CI/CD và Self-Healing Architecture
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm">QuantumOps</span>
+            <span class="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm">NeuralCD</span>
+            <span class="px-3 py-1 bg-secondary/20 text-secondary rounded-full text-sm">AutoHeal</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Stack Showcase -->
+  <section class="py-20 relative overflow-hidden">
+    <div class="absolute inset-0 holographic opacity-10"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-6xl font-black mb-6 gradient-text">Forge Toolkit</h2>
+        <p class="text-xl text-gray-400">Bộ công cụ rèn luyện quantum-level</p>
+      </div>
+      
+      <div class="tech-grid">
+        <div class="tech-item rounded-xl p-6 text-center group">
+          <i class="fab fa-react text-4xl text-blue-400 mb-3"></i>
+          <div class="text-sm font-mono">React</div>
+        </div>
+        <div class="tech-item rounded-xl p-6 text-center group">
+          <i class="fab fa-node-js text-4xl text-green-400 mb-3"></i>
+          <div class="text-sm font-mono">Node.js</div>
+        </div>
+        <div class="tech-item rounded-xl p-6 text-center group">
+          <i class="fab fa-python text-4xl text-yellow-400 mb-3"></i>
+          <div class="text-sm font-mono">Python</div>
+        </div>
+        <div class="tech-item rounded-xl p-6 text-center group">
+          <i class="fab fa-aws text-4xl text-orange-400 mb-3"></i>
+          <div class="text-sm font-mono">AWS</div>
+        </div>
+        <div class="tech-item rounded-xl p-6 text-center group">
+          <i class="fab fa-docker text-4xl text-blue-500 mb-3"></i>
+          <div class="text-sm font-mono">Docker</div>
+        </div>
+        <div class="tech-item rounded-xl p-6 text-center group">
+          <i class="fas fa-database text-4xl text-purple-400 mb-3"></i>
+          <div class="text-sm font-mono">MongoDB</div>
+        </div>
+        <div class="tech-item rounded-xl p-6 text-center group">
+          <i class="fab fa-git-alt text-4xl text-red-400 mb-3"></i>
+          <div class="text-sm font-mono">Git</div>
+        </div>
+        <div class="tech-item rounded-xl p-6 text-center group">
+          <i class="fas fa-fire text-4xl text-orange-500 mb-3"></i>
+          <div class="text-sm font-mono">Firebase</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-6xl font-black mb-6">
+          Sẵn sàng <span class="gradient-text">Forge</span> tương lai?
+        </h2>
+        <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+          Hãy cùng chúng tôi rèn luyện những giải pháp quantum-level và kiến tạo kỷ nguyên mới
+        </p>
+      </div>
+      
+      <div class="max-w-4xl mx-auto">
+        <form class="glass-effect rounded-3xl p-8 md:p-12">
+          <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <label class="block text-sm font-medium mb-3 text-neon">Họ và tên</label>
+              <input type="text" class="w-full px-6 py-4 bg-gray-800/50 border border-gray-700 rounded-xl focus:ring-2 focus:ring-neon focus:border-transparent text-white placeholder-gray-400 transition-all duration-300" placeholder="Nhập họ và tên">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-3 text-neon">Email</label>
+              <input type="email" class="w-full px-6 py-4 bg-gray-800/50 border border-gray-700 rounded-xl focus:ring-2 focus:ring-neon focus:border-transparent text-white placeholder-gray-400 transition-all duration-300" placeholder="your@email.com">
+            </div>
+          </div>
+          
+          <div class="mb-8">
+            <label class="block text-sm font-medium mb-3 text-neon">Quantum Vision</label>
+            <textarea rows="6" class="w-full px-6 py-4 bg-gray-800/50 border border-gray-700 rounded-xl focus:ring-2 focus:ring-neon focus:border-transparent text-white placeholder-gray-400 transition-all duration-300" placeholder="Mô tả quantum solution mà bạn muốn rèn luyện cùng chúng tôi..."></textarea>
+          </div>
+          
+          <button type="submit" class="w-full py-4 bg-gradient-to-r from-primary via-secondary to-accent rounded-xl font-bold text-lg hover:scale-105 transition-all duration-300 animate-glow">
+            <i class="fas fa-atom mr-3"></i>Bắt đầu Quantum Forge
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <div class="flex items-center justify-center mb-6">
+          <div class="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-xl flex items-center justify-center animate-pulse-glow mr-4">
+            <i class="fas fa-atom text-white text-2xl"></i>
+          </div>
+          <span class="font-black text-3xl gradient-text">QuantumForge</span>
+        </div>
+        <p class="text-gray-400 mb-8 max-w-2xl mx-auto">
+          Không chỉ là công ty công nghệ - chúng tôi là những kiến trúc sư rèn luyện tương lai quantum
+        </p>
+        <div class="flex justify-center space-x-6 mb-8">
+          <a href="#" class="text-gray-400 hover:text-neon text-2xl transition-all duration-300 hover:scale-125">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-primary text-2xl transition-all duration-300 hover:scale-125">
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-accent text-2xl transition-all duration-300 hover:scale-125">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-secondary text-2xl transition-all duration-300 hover:scale-125">
+            <i class="fab fa-discord"></i>
+          </a>
+        </div>
+        <p class="text-gray-500 text-sm">
+          &copy; 2024 QuantumForge Solutions. Tương lai bắt đầu từ hôm nay.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Particles.js
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 80, density: { enable: true, value_area: 800 } },
+        color: { value: ['#6366F1', '#8B5CF6', '#00F5FF', '#F59E0B'] },
+        shape: { type: 'circle' },
+        opacity: { value: 0.5, random: true },
+        size: { value: 3, random: true },
+        line_linked: {
+          enable: true,
+          distance: 150,
+          color: '#6366F1',
+          opacity: 0.2,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 2,
+          direction: 'none',
+          random: true,
+          straight: false,
+          out_mode: 'out',
+          bounce: false
+        }
+      },
+      interactivity: {
+        detect_on: 'canvas',
+        events: {
+          onhover: { enable: true, mode: 'repulse' },
+          onclick: { enable: true, mode: 'push' },
+          resize: true
+        }
+      },
+      retina_detect: true
+    });
+
+    // Typed.js for hero text
+    new Typed('#typed-text', {
+      strings: ['Quantum Computing', 'Neural Networks', 'Consciousness AI', 'Reality Forge', 'Quantum Mesh', 'Neural Defense'],
+      typeSpeed: 100,
+      backSpeed: 50,
+      backDelay: 2000,
+      loop: true
+    });
+
+    // Counter animation
+    function animateCounters() {
+      const counters = document.querySelectorAll('[data-count]');
+      counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-count'));
+        const duration = 2000;
+        const step = target / (duration / 16);
+        let current = 0;
+        
+        const timer = setInterval(() => {
+          current += step;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          counter.textContent = Math.floor(current) + (target === 100 ? '%' : target === 365 ? '+' : target === 42 ? '+' : '+');
+        }, 16);
+      });
+    }
+
+    // GSAP Animations
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero animations
+    gsap.from('.hero-content > div', {
+      duration: 1.5,
+      y: 100,
+      opacity: 0,
+      stagger: 0.2,
+      ease: 'power3.out'
+    });
+
+    // Service cards animation
+    gsap.from('.service-card', {
+      scrollTrigger: {
+        trigger: '#services',
+        start: 'top 80%'
+      },
+      duration: 1,
+      y: 100,
+      opacity: 0,
+      stagger: 0.2,
+      ease: 'power3.out'
+    });
+
+    // Tech items animation
+    gsap.from('.tech-item', {
+      scrollTrigger: {
+        trigger: '.tech-item',
+        start: 'top 90%'
+      },
+      duration: 0.8,
+      scale: 0,
+      opacity: 0,
+      stagger: 0.1,
+      ease: 'back.out(1.7)'
+    });
+
+    // Mobile menu
+    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+      // Add mobile menu functionality here
+    });
+
+    // Smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Start counter animation when page loads
+    window.addEventListener('load', () => {
+      setTimeout(animateCounters, 1000);
+      
+      // Debug: Check if all service cards and tech items are visible
+      console.log('Service cards:', document.querySelectorAll('.service-card').length);
+      console.log('Tech items:', document.querySelectorAll('.tech-item').length);
+      
+      // Force visibility
+      document.querySelectorAll('.service-card, .tech-item').forEach(el => {
+        el.style.display = 'block';
+        el.style.opacity = '1';
+        el.style.visibility = 'visible';
+      });
+      
+      // Force grid layout
+      const servicesGrid = document.querySelector('.services-grid');
+      const techGrid = document.querySelector('.tech-grid');
+      
+      if (servicesGrid) {
+        servicesGrid.style.display = 'grid';
+        servicesGrid.style.gridTemplateColumns = window.innerWidth >= 1024 ? 'repeat(3, 1fr)' : 
+                                                 window.innerWidth >= 768 ? 'repeat(2, 1fr)' : '1fr';
+        servicesGrid.style.gap = '2rem';
+      }
+      
+      if (techGrid) {
+        techGrid.style.display = 'grid';
+        techGrid.style.gridTemplateColumns = window.innerWidth >= 1024 ? 'repeat(8, 1fr)' : 
+                                             window.innerWidth >= 768 ? 'repeat(4, 1fr)' : 'repeat(2, 1fr)';
+        techGrid.style.gap = '2rem';
+      }
+    });
+
+    // Add scroll-triggered animations
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const parallax = document.querySelector('.floating-shapes');
+      if (parallax) {
+        parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
+      }
+    });
+    
+    // Handle window resize for responsive grid
+    window.addEventListener('resize', () => {
+      const servicesGrid = document.querySelector('.services-grid');
+      const techGrid = document.querySelector('.tech-grid');
+      
+      if (servicesGrid) {
+        servicesGrid.style.gridTemplateColumns = window.innerWidth >= 1024 ? 'repeat(3, 1fr)' : 
+                                                 window.innerWidth >= 768 ? 'repeat(2, 1fr)' : '1fr';
+      }
+      
+      if (techGrid) {
+        techGrid.style.gridTemplateColumns = window.innerWidth >= 1024 ? 'repeat(8, 1fr)' : 
+                                             window.innerWidth >= 768 ? 'repeat(4, 1fr)' : 'repeat(2, 1fr)';
+      }
+    });
+  </script>
 </body>
 </html>
